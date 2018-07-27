@@ -18,13 +18,21 @@
 	{
 		global $wpdb;
 
-		if($wpdb->query("UPDATE {$wpdb->posts} SET post_title='" . esc_sql($_REQUEST['name']) . "' WHERE post_type='acf-field' AND post_name='" . esc_sql($_REQUEST['field']) . "'"))
+		$name = trim(strip_tags($_REQUEST['name']));
+
+		if($name)
 		{
-			echo json_encode(array("status" => "OK"));
-		}
+			if($wpdb->query("UPDATE {$wpdb->posts} SET post_title='" . esc_sql($name) . "' WHERE post_type='acf-field' AND post_name='" . esc_sql($_REQUEST['field']) . "'"))
+			{
+				echo json_encode(array("status" => "OK"));
+			}
+			else
+			{
+				echo json_encode(array("status" => "ERROR"));
+			}
 		else
 		{
-			echo json_encode(array("status" => "ERROR"));
+			echo json_encode(array("status" => "EMPTY"));
 		}
 
 		wp_die();
